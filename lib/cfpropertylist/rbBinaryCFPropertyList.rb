@@ -123,6 +123,13 @@ module CFPropertyList
 
     # read a binary int value
     def read_binary_int(fname,fd,length)
+      # TODO / FIXME
+      # we encountered a bug, where a -1 value's header field
+      # had 4 in its length bits
+      # this is a workaround to parse files where this has happened
+      # remove this as soon as the bug has been fixed in the client
+      return CFInteger.new(-1) if length == 4
+
       if length > 3
         raise CFFormatError.new("Integer greater than 8 bytes: #{length}")
       end
